@@ -13,17 +13,24 @@ export default function Homepage() {
   const [ls, setLs] = React.useState([])
 
   React.useEffect(() => {
+
     const _ls = []
-    for (let i = 0; i < window.localStorage.length; i++) {
+
+    for(let i = 0; i < window.localStorage.length; i++) {
+
       const key = window.localStorage.key(i)
       const value = window.localStorage.getItem(key)
+
       _ls.push({ [key]: value })
     }
+
     console.log(_ls)
+
     setLs(_ls)
+
   }, [])
 
-  return (
+  return(
     <>
       <Typography variant="h1" gutterBottom>
         Projeto VULCOM
@@ -35,14 +42,17 @@ export default function Homepage() {
 
       <Typography variant="h5">
         Exposição de valores do <em>local storage</em>
+
         <TableContainer component={Paper}>
           <Table>
+
             <TableHead>
               <TableRow>
                 <TableCell>Chave</TableCell>
                 <TableCell>Valor</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {ls.map((kv, index) => (
                 <TableRow key={index}>
@@ -51,15 +61,22 @@ export default function Homepage() {
                 </TableRow>
               ))}
             </TableBody>
+
           </Table>
         </TableContainer>
+
       </Typography>
 
       <Typography variant="h5">
         Exposição de <em>cookies</em>
-        <Typography variant="caption" style={{ fontFamily: 'monospace ' }}>
+
+        <Typography
+          variant="caption"
+          style={{ fontFamily: 'monospace' }}
+        >
           <p>{document.cookie}</p>
         </Typography>
+
       </Typography>
     </>
   )

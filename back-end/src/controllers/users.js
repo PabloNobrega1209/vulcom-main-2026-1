@@ -157,10 +157,18 @@ controller.login = async function(req, res) {
 
       // Usuário e senha OK, passamos ao procedimento de gerar o token
       const token = jwt.sign(
-        user,                       // Dados do usuário
-        process.env.TOKEN_SECRET,   // Senha para criptografar o token
-        { expiresIn: '24h' }        // Prazo de validade do token
+        user,
+        process.env.TOKEN_SECRET,
+        { expiresIn: '24h' }
       )
+
+      res.cookie(process.env.AUTH_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+        path: '/',
+        maxAge: 24 * 60 * 60 * 1000
+      })
 
       // (...código existente...)
 
@@ -203,6 +211,17 @@ controller.logout = function(req, res) {
  })
  // HTTP 204: No Content
  res.status(204).end()
+}
+
+controller.logout = function(req, res) {
+
+  res.clearCookie(process.env.AUTH_COOKIE_NAME, {
+    path: '/',
+    secure: true,
+    sameSite: 'None'
+  })
+
+  res.status(204).end()
 }
 
 
