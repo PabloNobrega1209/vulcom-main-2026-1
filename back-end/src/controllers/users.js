@@ -12,6 +12,10 @@ const ARGON2_CONFIG = {
 const controller = {}     // Objeto vazio
 
 controller.create = async function(req, res) {
+
+  if(! req?.authUser?.is_admin)
+  return res.status(403).end()
+
   try {
     // Caso exista o campo "password" em req.body, é
     // necessário gerar o hash da senha antes de
@@ -35,37 +39,17 @@ controller.create = async function(req, res) {
 
 controller.retrieveAll = async function(req, res) {
   try {
-    const result = await prisma.user.findMany()
 
-    // HTTP 200: OK (implícito)
-    res.send(result)
-  }
-  catch(error) {
-    console.error(error)
+    if(! req?.authUser?.is_admin)
+      return res.status(403).end()
 
-    // HTTP 500: Internal Server Error
-    res.status(500).end()
-  }
-}
-
-controller.retrieveOne = async function(req, res) {
-  try {
-    const result = await prisma.user.findUnique({
-      where: { id: Number(req.params.id) }
+    const result = await prisma.user.findMany({
+      omit: { password: true }
     })
 
-    // Encontrou ~> retorna HTTP 200: OK (implícito)
-    if(result) res.send(result)
-    // Não encontrou ~> retorna HTTP 404: Not Found
-    else res.status(404).end()
+    res.send(result)
   }
-  catch(error) {
-    console.error(error)
 
-    // HTTP 500: Internal Server Error
-    res.status(500).end()
-  }
-}
 
 controller.update = async function(req, res) {
   try {
